@@ -1,3 +1,6 @@
+install:
+	pip install -r scripts/requirements.txt
+
 compile:
 	cairo-compile \
 		--proof_mode \

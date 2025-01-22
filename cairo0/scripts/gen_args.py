@@ -2,16 +2,6 @@ from coincurve import ecdsa, PrivateKey
 from coincurve.utils import sha256
 import json
 
-BASE = 2 ** 86
-
-
-def u256_to_bigint3(val: int) -> dict:
-    return {
-        "d2": val // (BASE * BASE),
-        "d1": (val // BASE) % BASE,
-        "d0": val % BASE,
-    }
-
 
 def generate_args():
     sk = PrivateKey()

@@ -13,4 +13,4 @@ enable-gas = false
 
 [dependencies]
 cairo_execute = "2.9.0"
-garaga = { git = "https://github.com/m-kus/garaga", rev = "3c64b14bc60c532df427f765c7177266a4b50991" }
+garaga = { git = "https://github.com/m-kus/garaga", rev = "65db99b8ba9ff19e7f19609cd06f8220d8406881" }

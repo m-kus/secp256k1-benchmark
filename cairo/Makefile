@@ -1,3 +1,9 @@
+install:
+	pip install -r scripts/requirements.txt
+
+args:
+	python ./scripts/gen_args.py > data/args.json
+
 execute:
 	rm -rf target/execute && scarb --profile proving execute
 
