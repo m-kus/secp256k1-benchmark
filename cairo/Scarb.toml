@@ -1,0 +1,10 @@
+[package]
+name = "ecdsa"
+version = "0.1.0"
+edition = "2024_07"
+
+[cairo]
+enable-gas = false
+
+[dependencies]
+garaga = { git = "https://github.com/keep-starknet-strange/garaga" }
