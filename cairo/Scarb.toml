@@ -3,8 +3,14 @@ name = "ecdsa"
 version = "0.1.0"
 edition = "2024_07"
 
-[cairo]
+[executable]
+
+[profile.proving]
+inherits = "release"
+
+[profile.proving.cairo]
 enable-gas = false
 
 [dependencies]
-garaga = { git = "https://github.com/keep-starknet-strange/garaga" }
+cairo_execute = "2.9.0"
+garaga = { git = "https://github.com/m-kus/garaga", rev = "3c64b14bc60c532df427f765c7177266a4b50991" }

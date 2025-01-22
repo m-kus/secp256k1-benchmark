@@ -44,6 +44,16 @@ See instructions at https://docs.succinct.xyz/getting-started/install.html
 
 ## Run
 
+### Cairo
+
+```sh
+# Generate execution trace
+make execute
+
+# Prove with Stwo
+make prove
+```
+
 ### Cairo0
 
 ```sh
