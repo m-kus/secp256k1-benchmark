@@ -31,8 +31,14 @@ pub fn main(args: Array<felt252>) {
     } = Serde::deserialize(ref arguments).expect('failed to deserialize');
 
     assert(r <= SECP256K1.n, '');
+    assert(r != 0, '');
+
     assert(s <= SECP256K1.n, '');
+    assert(s != 0, '');
+
     assert(msg_hash <= SECP256K1.n, '');
+    assert(msg_hash != 0, '');
+
     pk_point.assert_on_curve(2);
 
     // TODO: there should be a better way to do this
