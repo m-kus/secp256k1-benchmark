@@ -3,14 +3,13 @@ name = "ecdsa"
 version = "0.1.0"
 edition = "2024_07"
 
-[executable]
+[lib]
 
-[profile.proving]
-inherits = "release"
+[executable]
 
 [profile.proving.cairo]
 enable-gas = false
 
 [dependencies]
-cairo_execute = "2.9.0"
+cairo_execute = "2.10.0-rc.1"
 garaga = { git = "https://github.com/m-kus/garaga", rev = "65db99b8ba9ff19e7f19609cd06f8220d8406881" }

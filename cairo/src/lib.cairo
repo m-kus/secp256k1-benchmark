@@ -22,7 +22,9 @@ struct Arguments {
 }
 
 #[executable]
-fn main(args: Array<felt252>) {
+pub fn main(args: Array<felt252>) {
+    println!("Verifying signature...");
+
     let mut arguments = args.span();
     let Arguments {
         r, s, msg_hash, pk_x, pk_derive_hint, msm_hint, msm_derive_hint,
@@ -44,7 +46,7 @@ fn main(args: Array<felt252>) {
     let r: u384 = r.into();
     let msg_hash: u384 = msg_hash.into();
 
-    // TODO: can we avoid u384 <> u256 casiting?
+    // TODO: can we avoid u384 <> u256 casting?
     let u1: u256 = mul_mod_p(msg_hash, s_inv, modulus).try_into().unwrap();
     let u2: u256 = mul_mod_p(r, s_inv, modulus).try_into().unwrap();
 
