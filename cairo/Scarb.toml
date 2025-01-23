@@ -5,7 +5,7 @@ edition = "2024_07"
 
 [lib]
 
-[executable]
+#[executable]
 
 [profile.proving.cairo]
 enable-gas = false

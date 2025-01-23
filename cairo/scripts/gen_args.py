@@ -5,7 +5,8 @@ from garaga.definitions import CurveID, G1Point
 import json
 import sys
 
-BASE = 2 << 128
+TWO128 = 2**128
+TWO192 = 2**192
 
 
 def gen_msm_hint(generator_point: G1Point, pk_point: G1Point, u1: int, u2: int):
@@ -21,8 +22,11 @@ def gen_msm_hint(generator_point: G1Point, pk_point: G1Point, u1: int, u2: int):
 
 
 def to_u256(value: int) -> list[int]:
-    return [value % BASE, value // BASE]
+    return [value % TWO128, value // TWO128]
 
+
+def to_u384(value: int) -> list[int]:
+    return [value % TWO192, value // TWO192]
 
 def generate_args(target: str):
     sk = PrivateKey()
@@ -45,21 +49,22 @@ def generate_args(target: str):
 
     generator_point = G1Point.get_nG(CurveID.SECP256K1, 1)
 
-    msm_hint = gen_msm_hint(generator_point, pk_point, u1, u2)
+    # MSM + derive point from X hint
+    hint = gen_msm_hint(generator_point, pk_point, u1, u2)
 
     res = [
-        # *to_u256(r),
-        # *to_u256(s),
-        # *to_u256(msg_hash),
-        # pk_x,
-        # 0, 0, 0, 0, 0,
-        *msm_hint
+        *to_u256(r),
+        *to_u256(s),
+        *to_u256(msg_hash),
+        *to_u384(pk_x),
+        *to_u384(pk_y),
+        *hint[1:]  # remove `include_digits_decomposition` flag
     ]
 
     if target == "cairo-run":
         return [res]
     elif target == "execute":
-        return list(map(hex, res))
+        return [hex(len(res))] + list(map(hex, res))
     else:
         raise NotImplementedError(target)
 

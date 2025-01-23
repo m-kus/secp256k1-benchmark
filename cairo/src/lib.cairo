@@ -1,13 +1,14 @@
+use garaga::ec_ops::G1PointTrait;
 use garaga::definitions::SECP256K1;
 use garaga::ec_ops::{
-    DerivePointFromXHint, G1Point, MSMHint, derive_ec_point_from_X, msm_g1, u384,
+    DerivePointFromXHint, G1Point, MSMHint, msm_g1, u384,
 };
 use garaga::basic_field_ops::{inv_mod_p, mul_mod_p};
 use core::circuit::{CircuitModulus, u96};
 
 pub const SECP256K1_G1_GENERATOR: G1Point = G1Point {
-    x: u384 { limb0: 0x1, limb1: 0x0, limb2: 0x0, limb3: 0x0 },
-    y: u384 { limb0: 0x2, limb1: 0x0, limb2: 0x0, limb3: 0x0 },
+    x: u384 { limb0: 0x2dce28d959f2815b16f81798, limb1: 0x55a06295ce870b07029bfcdb, limb2: 0x79be667ef9dcbbac, limb3: 0x0 },
+    y: u384 { limb0: 0xa68554199c47d08ffb10d4b8, limb1: 0x5da4fbfc0e1108a8fd17b448, limb2: 0x483ada7726a3c465, limb3: 0x0 },
 };
 
 #[derive(Drop, Serde)]
@@ -15,8 +16,7 @@ struct Arguments {
     r: u256,
     s: u256,
     msg_hash: u256,
-    pk_x: felt252,
-    pk_derive_hint: DerivePointFromXHint,
+    pk_point: G1Point,
     msm_hint: MSMHint,
     msm_derive_hint: DerivePointFromXHint,
 }
@@ -27,16 +27,13 @@ pub fn main(args: Array<felt252>) {
 
     let mut arguments = args.span();
     let Arguments {
-        r, s, msg_hash, pk_x, pk_derive_hint, msm_hint, msm_derive_hint,
+        r, s, msg_hash, pk_point, msm_hint, msm_derive_hint,
     } = Serde::deserialize(ref arguments).expect('failed to deserialize');
 
     assert(r <= SECP256K1.n, '');
     assert(s <= SECP256K1.n, '');
     assert(msg_hash <= SECP256K1.n, '');
-
-    let pk_point = derive_ec_point_from_X(
-        pk_x, pk_derive_hint.y_last_attempt, pk_derive_hint.g_rhs_sqrt, 2,
-    );
+    pk_point.assert_on_curve(2);
 
     // TODO: there should be a better way to do this
     let p: [u96; 4] = [SECP256K1.p.limb0, SECP256K1.p.limb1, SECP256K1.p.limb2, SECP256K1.p.limb3];
@@ -50,8 +47,12 @@ pub fn main(args: Array<felt252>) {
     let u1: u256 = mul_mod_p(msg_hash, s_inv, modulus).try_into().unwrap();
     let u2: u256 = mul_mod_p(r, s_inv, modulus).try_into().unwrap();
 
+    println!("u1 = {u1}, u2 = {u2}");
+
     let points = array![SECP256K1_G1_GENERATOR, pk_point].span();
     let scalars = array![u1, u2].span();
+
+    println!("ppk_point = {pk_point:?}");
 
     let res = msm_g1(
         Option::None, msm_hint, msm_derive_hint, points, scalars, 2,
