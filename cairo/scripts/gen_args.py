@@ -1,7 +1,7 @@
 from coincurve import ecdsa, PrivateKey
 from coincurve.utils import sha256
 from garaga import garaga_rs
-from garaga.definitions import CurveID, G1Point
+from garaga.definitions import CurveID, G1Point, CURVES
 import json
 import sys
 
@@ -43,9 +43,10 @@ def generate_args(target: str):
     r = int.from_bytes(signature[:32], 'big')
     s = int.from_bytes(signature[32:], 'big')
 
-    s_inv = pow(s, -1, CurveID.SECP256K1.p)
-    u1 = (msg_hash * s_inv) % CurveID.SECP256K1.p
-    u2 = (r * s_inv) % CurveID.SECP256K1.p
+    n = CURVES[CurveID.SECP256K1.value].n
+    s_inv = pow(s, -1, n)
+    u1 = (msg_hash * s_inv) % n
+    u2 = (r * s_inv) % n
 
     generator_point = G1Point.get_nG(CurveID.SECP256K1, 1)
 
