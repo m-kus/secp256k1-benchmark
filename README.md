@@ -1,6 +1,6 @@
-# ECDSA benchmark
+# Secp256k1 benchmark
 
-Comparing different approaches to verifying ECDSA signatures in Cairo, and measuring performance versus available proving toolchains.
+Comparing different approaches to verifying ECDSA/Schnorr signatures in Cairo, and measuring performance versus available proving toolchains.
 
 ## Install
 
