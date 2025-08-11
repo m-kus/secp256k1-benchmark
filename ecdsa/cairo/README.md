@@ -2,7 +2,38 @@
 
 ## Installation
 
-Install Python wrapper of garaga-rs
+Requires [Scarb 2.12](https://docs.swmansion.com/scarb/download.html).
+
+Install Python script dependencies:
 ```sh
-pip install git+https://github.com/m-kus/garaga.git@871762fc1c63f9d61c3c7c17ff8b0cbc83e5dcd1
+make install
+```
+
+Install Stwo prover:
+```sh
+make install-stwo
+```
+
+## Build the program and prepare args
+
+Build Cairo program:
+```sh
+scarb build
+```
+
+Generate args — ECDSA signature with extra data (hints) required for faster verification (in ZK context):
+```sh
+make args
+```
+
+## Execute and prove
+
+Execute the program with the args:
+```sh
+make execute
+```
+
+Prove the program (the proof will be written to `target/proof.json`):
+```sh
+make prove
 ```

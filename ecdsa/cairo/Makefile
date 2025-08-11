@@ -1,15 +1,20 @@
 install:
 	pip install -r scripts/requirements.txt
 
+install-stwo:
+	RUSTFLAGS="-C target-cpu=native -C opt-level=3" \
+		cargo install --force \
+		--git https://github.com/starkware-libs/stwo-cairo \
+		cairo-prove
+
 args:
 	python ./scripts/gen_args.py > data/args.json
-	python ./scripts/gen_args.py execute > data/args_execute.json
 
 execute:
-	rm -rf target/execute && scarb --profile proving execute --verbose --print-program-output --arguments-file data/args_execute.json
-
-run:
-	scarb cairo-run --arguments-file data/args.json --print-resource-usage
+	scarb --profile proving execute \
+		--arguments-file data/args.json \
+		--print-resource-usage \
+		--output none
 
 prove:
-	adapted_stwo --priv_json target/execute/ecdsa/air_private_input.json --pub_json target/execute/ecdsa/air_public_input.json --proof_path target/proof.json
+	cairo-prove prove target/proving/ecdsa.executable.json target/proof.json --arguments-file data/args.json
